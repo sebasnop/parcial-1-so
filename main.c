@@ -23,14 +23,13 @@ int main(int argc, char *argv[]) {
     int rc = fork();
 
     if (rc < 0){
-        // Falla creacion proceso hijo
+        // Si falla la creacion del proceso hijo
         printf("Fallo fork()\n");
         return 2;
 
     } else if (rc == 0){
         // Proceso hijo
         char texto_recibido_hijo[200]; // Se crea variable donde se guarda el texto recibido
-        char texto_enviado_hijo[200]; // Se crea variable donde se guarda el texto a enviar
         int n; // Se crea variable donde se guarda el numero de caracteres recibidos
 
         // Lee el texto enviado por el padre
@@ -45,7 +44,7 @@ int main(int argc, char *argv[]) {
         // Convertir a mayúsculas
         int indice = 0;
         for (indice; texto_recibido_hijo[indice] != '\0'; ++indice){
-            texto_enviado_hijo[indice] = toupper(texto_recibido_hijo[indice]);
+            texto_recibido_hijo[indice] = toupper(texto_recibido_hijo[indice]);
         }
 
         // Envia el texto convertido a mayúsculas al padre
@@ -55,7 +54,7 @@ int main(int argc, char *argv[]) {
             return 5;
         }
             // Luego se envía el texto
-        if (write(hijo_a_padre[1], texto_enviado_hijo, sizeof(char) * m) < 0){
+        if (write(hijo_a_padre[1], texto_recibido_hijo, sizeof(char) * m) < 0){
             return 5;
         }
 
