@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
             return 7;
         }
 
-        wait(NULL); // Espera al proceso hijo
+        //wait(NULL); // Espera al proceso hijo
 
         // Lee el texto enviado por el hijo
         int n;
