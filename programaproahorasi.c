@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
         if (write(padre_a_hijo[1], texto_enviado_padre, sizeof(texto_enviado_padre) * n) == -1){
             return 1;
         }
-        wait(NULL); // Espero al proceso hijo
+        wait(NULL); // Espera al proceso hijo
 
         // Lee el texto enviado por el hijo
         if (read(hijo_a_padre[0], texto_recibido_padre, strlen(texto_recibido_padre) + 1) == -1){
