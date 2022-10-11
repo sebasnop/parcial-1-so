@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
         if (read(padre_a_hijo[0], texto_recibido_hijo, strlen(texto_recibido_hijo) + 1) < 0){
             return 1;
         }
-        printf("Proceso hijo recibe: %s", texto_recibido_hijo, "\n");
+        printf("Proceso hijo recibe: %s", texto_recibido_hijo);
         
         // Convertir a mayúsculas
         int indice = 0;
@@ -67,6 +67,6 @@ int main(int argc, char *argv[]) {
         if (read(hijo_a_padre[0], texto_recibido_padre, strlen(texto_recibido_padre) + 1) == -1){
             return 1;
         }
-        printf("Proceso padre recibe: %s", texto_recibido_padre, "\n");
+        printf("Proceso padre recibe: %s", texto_recibido_padre);
     }
 }
