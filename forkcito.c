@@ -35,8 +35,8 @@ int main(int argc, char *argv[]) {
         // PROCESO HIJO
 
         // Bloquear envios contrarios, solo una direccion
-        close(padre_a_hijo[0]);
-        close(hijo_a_padre[1]);
+        close(padre_a_hijo[1]);
+        close(hijo_a_padre[0]);
 
         char texto_recibido_hijo[200]; // Donde se guardara el texto recibido
         int n; // Donde se guardara numero de caracteres recibidos
@@ -46,10 +46,14 @@ int main(int argc, char *argv[]) {
             return 6; // Devuelve el numero si falla
         }
 
+        //printf("Cantidad de caracteres recibida %d\n", n);
+
         // Guarda texto recibido
-        if (read(padre_a_hijo[0], &texto_recibido_hijo, (sizeof(int) * n)) < 0) {
+        if (read(padre_a_hijo[0], &texto_recibido_hijo, (sizeof(char) * n)) < 0) {
             return 7; // Devuelve el numero si falla
         }
+
+        printf("Proceso hijo recibe: %s\n", texto_recibido_hijo);
 
         // Convertir a mayúsculas
         int indice = 0;
@@ -63,16 +67,16 @@ int main(int argc, char *argv[]) {
         }
 
         // Bloquear envios en direccion correcta, ya que se finaliza el proceso
-        close(padre_a_hijo[1]);
-        close(hijo_a_padre[0]);
+        close(padre_a_hijo[0]);
+        close(hijo_a_padre[1]);
 
     } else {
         
         // PROCESO PADRE
 
         // Se cierran envios en sentido contrario
-        close(padre_a_hijo[1]);
-        close(hijo_a_padre[0]);
+        close(padre_a_hijo[0]);
+        close(hijo_a_padre[1]);
 
         // Para guardar el texto ingresado por usuario y recibido por hijo
         char texto_enviado_padre[200];
@@ -83,11 +87,17 @@ int main(int argc, char *argv[]) {
         // Se guarda el texto ingresado
         fgets(texto_enviado_padre, sizeof(texto_enviado_padre), stdin);
         
+        //printf("Texto recibido %s\n", texto_enviado_padre);
+
         // Se elimina el salto de línea (Cuando el usuario da ENTER)
         texto_enviado_padre[strlen(texto_enviado_padre) - 1] = '\0';
 
+        //printf("Texto sin salto de linea %s\n", texto_enviado_padre);
+
         // Se obtiene la cantidad real de caracteres ingresados
         int n = strlen(texto_enviado_padre) + 1;
+
+        //printf("Cantidad de caracteres enviada %d\n", n);
 
         // Se envia cantidad n de caracteres al hijo
         if (write(padre_a_hijo[1], &n, sizeof(int)) < 0) {
@@ -98,18 +108,18 @@ int main(int argc, char *argv[]) {
         if (write(padre_a_hijo[1], &texto_enviado_padre, (sizeof(char) * n)) < 0) {
             return 5;
         }
+        
+        //wait(NULL);
 
         if (read(hijo_a_padre[0], &texto_enviado_padre, (sizeof(char) * n)) < 0) {
             return 9;
         }
 
-        printf("Received string %s\n", texto_enviado_padre);
+        printf("Proceso padre recibe de regreso: %s\n", texto_enviado_padre);
 
         // Bloquear envios en direccion correcta, ya que se finaliza el proceso
-        close(padre_a_hijo[0]);
-        close(hijo_a_padre[1]);
-        
-        wait(NULL);
+        close(padre_a_hijo[1]);
+        close(hijo_a_padre[0]);
 
     }
 
