@@ -38,7 +38,8 @@ int main(int argc, char *argv[]) {
         printf("Proceso hijo recibe: %s", texto_recibido_hijo);
         
         // Convertir a mayúsculas
-        for (int indice = 0; texto_recibido_hijo[indice] != '\0'; ++indice){
+        int indice = 0;
+        for (indice; texto_recibido_hijo[indice] != '\0'; ++indice){
             texto_recibido_hijo[indice] = toupper(texto_recibido_hijo[indice]);
         }
 
