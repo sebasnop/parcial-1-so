@@ -56,6 +56,7 @@ int main(int argc, char *argv[]) {
         // Ingreso de texto por el usuario
         printf("Ingrese cadena de texto: ");
         fgets(texto_enviado_padre, sizeof(texto_enviado_padre), stdin); // Se guarda el texto ingresado
+        texto_enviado_padre[strlen(texto_enviado_padre) - 1] = '\0'; // Se elimina el salto de línea
 
         // Envia el texto ingresado por el usuario al hijo
         if (write(padre_a_hijo[1], texto_enviado_padre, strlen(texto_enviado_padre) + 1) == -1){
