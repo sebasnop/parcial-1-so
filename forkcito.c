@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 int main(int argc, char *argv[]) {c
 
@@ -23,13 +26,28 @@ int main(int argc, char *argv[]) {c
 
     if (rc < 0){
         
-        // Falla creacion proceso hijo
-        printf("Fallo fork()\n");
-        return 2;
+        // Manejos de excepciones al crear proceso hijo
+        printf("Fallo al crear proceso hijo\n");
+        return 3;
     
     } else if (rc == 0){
         
         // PROCESO HIJO
+
+        // Bloquear envios contrarios, solo una direccion
+        close(hijo_a_padre[0]);
+        close(padre_a_hijo[1]);
+
+        char texto_recibido_hijo[200]; // Donde se guardara el texto recibido
+        int n; // Donde se guardara numero de caracteres recibidos
+
+        // Lee el texto enviado por el padre
+        if (read(padre_a_hijo[0], &n, sizeof(int)) < 0) {
+            return 5; // Devuelve 5 si falla
+        }
+
+
+
     
     } else {
         
