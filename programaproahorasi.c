@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     if (rc < 0){
         // Falla creacion proceso hijo
         printf("Fallo fork()\n");
-        return 1;
+        return 2;
 
     } else if (rc == 0){
         // Proceso hijo
@@ -33,9 +33,11 @@ int main(int argc, char *argv[]) {
         int n; // Se crea variable donde se guarda el numero de caracteres recibidos
 
         // Lee el texto enviado por el padre
-        read(padre_a_hijo[0], &n, sizeof(int));
-        if (read(padre_a_hijo[0], texto_recibido_hijo, sizeof(texto_recibido_hijo) * n) < 0){
-            return 1;
+        if (read(padre_a_hijo[0], &n, sizeof(int)) < 0) {
+            return 3;
+        }
+        if (read(padre_a_hijo[0], texto_recibido_hijo, sizeof(char) * n) < 0){
+            return 4;
         }
         printf("Proceso hijo recibe: %s\n", texto_recibido_hijo);
         
@@ -46,8 +48,12 @@ int main(int argc, char *argv[]) {
         }
 
         // Envia el texto convertido a mayúsculas al padre
-        if (write(hijo_a_padre[1], texto_recibido_hijo, strlen(texto_recibido_hijo) + 1) < 0){
-            return 1;
+        int n = strlen(texto_recibido_hijo) + 1;
+        if (write(hijo_a_padre[1], &n, sizeof(int)) < 0){
+            return 5;
+        }
+        if (write(hijo_a_padre[1], texto_recibido_hijo, sizeof(char) * n) < 0){
+            return 5;
         }
 
     } else {
@@ -61,17 +67,25 @@ int main(int argc, char *argv[]) {
         texto_enviado_padre[strlen(texto_enviado_padre) - 1] = '\0'; // Se elimina el salto de línea
 
         // Envia el texto ingresado por el usuario al hijo
-        int n =strlen(texto_enviado_padre) + 1;
-        write(padre_a_hijo[1], &n, sizeof(int));
-
-        if (write(padre_a_hijo[1], texto_enviado_padre, sizeof(texto_enviado_padre) * n) == -1){
-            return 1;
+        int n = strlen(texto_enviado_padre) + 1; // Se crea variable donde se guarda el numero de caracteres a enviar
+            // Primero se envía la longitud del texto
+        if (write(padre_a_hijo[1], &n, sizeof(int)) < 0){
+            return 6;
         }
+            // Luego se envía el texto
+        if (write(padre_a_hijo[1], texto_enviado_padre, sizeof(char) * n) == -1){
+            return 7;
+        }
+
         wait(NULL); // Espera al proceso hijo
 
         // Lee el texto enviado por el hijo
-        if (read(hijo_a_padre[0], texto_recibido_padre, strlen(texto_recibido_padre) + 1) == -1){
-            return 1;
+        int n;
+        if (read(hijo_a_padre[0], &n, sizeof(int)) < 0) {
+            return 3;
+        }
+        if (read(hijo_a_padre[0], texto_recibido_padre, sizeof(char)*n) == -1){
+            return 8;
         }
         printf("Proceso padre recibe: %s\n", texto_recibido_padre);
     }
