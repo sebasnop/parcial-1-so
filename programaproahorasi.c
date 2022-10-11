@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
         if (read(padre_a_hijo[0], texto_recibido_hijo, strlen(texto_recibido_hijo) + 1) < 0){
             return 1;
         }
-        printf("Proceso hijo recibe: %s", texto_recibido_hijo);
+        printf("Proceso hijo recibe: %s", texto_recibido_hijo, "\n");
         
         // Convertir a mayúsculas
         int indice = 0;
@@ -55,8 +55,7 @@ int main(int argc, char *argv[]) {
 
         // Ingreso de texto por el usuario
         printf("Ingrese cadena de texto: ");
-        fgets(texto_enviado_padre, sizeof(texto_enviado_padre), stdin); 
-        texto_enviado_padre[strlen(texto_enviado_padre) - 1] = '\0';
+        fgets(texto_enviado_padre, sizeof(texto_enviado_padre), stdin); // Se guarda el texto ingresado
 
         // Envia el texto ingresado por el usuario al hijo
         if (write(padre_a_hijo[1], texto_enviado_padre, strlen(texto_enviado_padre) + 1) == -1){
@@ -68,6 +67,6 @@ int main(int argc, char *argv[]) {
         if (read(hijo_a_padre[0], texto_recibido_padre, strlen(texto_recibido_padre) + 1) == -1){
             return 1;
         }
-        printf("Proceso padre recibe: %s", texto_recibido_padre);
+        printf("Proceso padre recibe: %s", texto_recibido_padre, "\n");
     }
 }
