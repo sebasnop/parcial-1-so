@@ -30,12 +30,14 @@ int main(int argc, char *argv[]) {
     } else if (rc == 0){
         // Proceso hijo
         char texto_recibido_hijo[200]; // Se crea variable donde se guarda el texto recibido
+        int n; // Se crea variable donde se guarda el numero de caracteres recibidos
 
         // Lee el texto enviado por el padre
-        if (read(padre_a_hijo[0], texto_recibido_hijo, strlen(texto_recibido_hijo) + 1) < 0){
+        read(padre_a_hijo[0], &n, sizeof(int));
+        if (read(padre_a_hijo[0], texto_recibido_hijo, sizeof(texto_recibido_hijo) * n) < 0){
             return 1;
         }
-        printf("Proceso hijo recibe: %s", texto_recibido_hijo);
+        printf("Proceso hijo recibe: %s\n", texto_recibido_hijo);
         
         // Convertir a mayúsculas
         int indice = 0;
@@ -59,7 +61,10 @@ int main(int argc, char *argv[]) {
         texto_enviado_padre[strlen(texto_enviado_padre) - 1] = '\0'; // Se elimina el salto de línea
 
         // Envia el texto ingresado por el usuario al hijo
-        if (write(padre_a_hijo[1], texto_enviado_padre, strlen(texto_enviado_padre) + 1) == -1){
+        int n =strlen(texto_enviado_padre) + 1;
+        write(padre_a_hijo[1], &n, sizeof(int));
+
+        if (write(padre_a_hijo[1], texto_enviado_padre, sizeof(texto_enviado_padre) * n) == -1){
             return 1;
         }
         wait(NULL); // Espero al proceso hijo
@@ -68,6 +73,6 @@ int main(int argc, char *argv[]) {
         if (read(hijo_a_padre[0], texto_recibido_padre, strlen(texto_recibido_padre) + 1) == -1){
             return 1;
         }
-        printf("Proceso padre recibe: %s", texto_recibido_padre);
+        printf("Proceso padre recibe: %s\n", texto_recibido_padre);
     }
 }
