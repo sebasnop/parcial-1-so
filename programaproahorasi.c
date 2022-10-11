@@ -29,31 +29,41 @@ int main(int argc, char *argv[]) {
 
     } else if (rc == 0){
         // Proceso hijo
-        char texto_enviado_hijo[200]; // Se crea variable donde se guarda el texto ingresado
         char texto_recibido_hijo[200]; // Se crea variable donde se guarda el texto recibido
-        // Desde aqui xd
-        int x;
-        if (read(padre_a_hijo[0], &x, sizeof(x)) < 0){
+
+        // Lee el texto enviado por el padre
+        if (read(padre_a_hijo[0], texto_recibido_hijo, strlen(texto_recibido_hijo) + 1) < 0){
             return 1;
         }
-        printf("Proceso hijo recibe: %s", x);
-        x = x * 2;
-        if (write(hijo_a_padre[1], &x, sizeof(x)) < 0){
+        printf("Proceso hijo recibe: %s", texto_recibido_hijo);
+        
+        // Convertir a mayúsculas
+        for (int indice = 0; texto_recibido_hijo[indice] != '\0'; ++indice){
+            texto_recibido_hijo[indice] = toupper(texto_recibido_hijo[indice]);
+        }
+
+        // Envia el texto convertido a mayúsculas al padre
+        if (write(hijo_a_padre[1], texto_recibido_hijo, strlen(texto_recibido_hijo) + 1) < 0){
             return 1;
         }
-        // Hasta aqui xd
 
     } else {
         // Proceso padre
         char texto_enviado_padre[200]; // Se crea variable donde se guarda el texto ingresado
         char texto_recibido_padre[200]; // Se crea variable donde se guarda el texto recibido
+
+        // Ingreso de texto por el usuario
         printf("Ingrese cadena de texto: ");
         fgets(texto_enviado_padre, sizeof(texto_enviado_padre), stdin); 
         texto_enviado_padre[strlen(texto_enviado_padre) - 1] = '\0';
+
+        // Envia el texto ingresado por el usuario al hijo
         if (write(padre_a_hijo[1], texto_enviado_padre, strlen(texto_enviado_padre) + 1) == -1){
             return 1;
         }
         wait(NULL); // Espero al proceso hijo
+
+        // Lee el texto enviado por el hijo
         if (read(hijo_a_padre[0], texto_recibido_padre, strlen(texto_recibido_padre) + 1) == -1){
             return 1;
         }
