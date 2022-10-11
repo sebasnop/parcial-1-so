@@ -10,6 +10,7 @@ int main(void)
 
         printf("Proceso hijo recibe: %s", name);
 
+        int indice;
         for (int indice = 0; name[indice] != '\0'; ++indice){
             name[indice] = toupper(name[indice]);
 
