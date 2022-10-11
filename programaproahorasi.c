@@ -30,6 +30,7 @@ int main(int argc, char *argv[]) {
     } else if (rc == 0){
         // Proceso hijo
         char texto_recibido_hijo[200]; // Se crea variable donde se guarda el texto recibido
+        char texto_enviado_hijo[200]; // Se crea variable donde se guarda el texto a enviar
         int n; // Se crea variable donde se guarda el numero de caracteres recibidos
 
         // Lee el texto enviado por el padre
@@ -44,15 +45,17 @@ int main(int argc, char *argv[]) {
         // Convertir a mayúsculas
         int indice = 0;
         for (indice; texto_recibido_hijo[indice] != '\0'; ++indice){
-            texto_recibido_hijo[indice] = toupper(texto_recibido_hijo[indice]);
+            texto_enviado_hijo[indice] = toupper(texto_recibido_hijo[indice]);
         }
 
         // Envia el texto convertido a mayúsculas al padre
-        int n = strlen(texto_recibido_hijo) + 1;
-        if (write(hijo_a_padre[1], &n, sizeof(int)) < 0){
+        int m = strlen(texto_recibido_hijo) + 1;
+            // Primero se envía la longitud del texto
+        if (write(hijo_a_padre[1], &m, sizeof(int)) < 0){
             return 5;
         }
-        if (write(hijo_a_padre[1], texto_recibido_hijo, sizeof(char) * n) < 0){
+            // Luego se envía el texto
+        if (write(hijo_a_padre[1], texto_enviado_hijo, sizeof(char) * m) < 0){
             return 5;
         }
 
@@ -67,13 +70,13 @@ int main(int argc, char *argv[]) {
         texto_enviado_padre[strlen(texto_enviado_padre) - 1] = '\0'; // Se elimina el salto de línea
 
         // Envia el texto ingresado por el usuario al hijo
-        int n = strlen(texto_enviado_padre) + 1; // Se crea variable donde se guarda el numero de caracteres a enviar
+        int m = strlen(texto_enviado_padre) + 1; // Se crea variable donde se guarda el numero de caracteres a enviar
             // Primero se envía la longitud del texto
-        if (write(padre_a_hijo[1], &n, sizeof(int)) < 0){
+        if (write(padre_a_hijo[1], &m, sizeof(int)) < 0){
             return 6;
         }
             // Luego se envía el texto
-        if (write(padre_a_hijo[1], texto_enviado_padre, sizeof(char) * n) == -1){
+        if (write(padre_a_hijo[1], texto_enviado_padre, sizeof(char) * m) == -1){
             return 7;
         }
 
@@ -82,7 +85,7 @@ int main(int argc, char *argv[]) {
         // Lee el texto enviado por el hijo
         int n;
         if (read(hijo_a_padre[0], &n, sizeof(int)) < 0) {
-            return 3;
+            return 8;
         }
         if (read(hijo_a_padre[0], texto_recibido_padre, sizeof(char)*n) == -1){
             return 8;
