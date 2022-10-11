@@ -1,0 +1,10 @@
+# Object files
+# (Para que no se suban los .obj)
+*.obj
+
+# Executables
+# (Para que no se suban los .exe)
+*.exe
+
+# Carpeta Visual Studio Code
+.vscode/
